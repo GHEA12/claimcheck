@@ -1,0 +1,6 @@
+# Real Firebase web config lives here locally — never commit it.
+firebase-config.js
+
+node_modules/
+.DS_Store
+*.log
