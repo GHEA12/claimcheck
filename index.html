@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ClaimCheck — Hybrid AI trust checks with a receipt for every verdict</title>
+<meta name="description" content="Paste a listing, job offer, or message. ClaimCheck screens it on-device with Firebase AI Logic hybrid inference, deep-checks in the cloud, and issues a tamper-evident receipt for every verdict." />
+<link rel="stylesheet" href="styles.css" />
+<script type="importmap">
+{
+  "imports": {
+    "firebase/app": "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js",
+    "firebase/ai": "https://www.gstatic.com/firebasejs/12.6.0/firebase-ai.js",
+    "firebase/app-check": "https://www.gstatic.com/firebasejs/12.6.0/firebase-app-check.js",
+    "firebase/auth": "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js",
+    "firebase/firestore": "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js"
+  }
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">✓</div>
+    <div>
+      <h1>ClaimCheck</h1>
+      <p class="tagline">Trust checks for the texts strangers send you — with a receipt for every verdict.</p>
+    </div>
+  </div>
+  <div class="badges">
+    <span id="mode-badge" class="badge badge-mode">starting…</span>
+    <span class="badge">Web / Chrome</span>
+    <span class="badge">Firebase AI Logic</span>
+  </div>
+</header>
+
+<main>
+  <section class="how">
+    <div class="step"><strong>1 · Quick Screen</strong><span>On-device first (Gemini Nano via Firebase AI Logic). Instant, private, works offline.</span></div>
+    <div class="step"><strong>2 · Deep Check</strong><span>Long or high-risk texts go to a cloud Gemini model for the full verification memo.</span></div>
+    <div class="step"><strong>3 · Receipt</strong><span>Every verdict is sealed into a hash-chained receipt that records where the AI ran. Anyone can re-verify it.</span></div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Check a text</h2>
+      <label for="category">What is it?</label>
+      <select id="category"></select>
+      <label for="input">Paste the listing, offer, invoice, or message</label>
+      <textarea id="input" rows="12" placeholder="Paste the text here…"></textarea>
+      <div class="row between">
+        <span id="charcount" class="muted">0 characters</span>
+        <span class="samples">
+          Try:
+          <button type="button" class="linkbtn" data-sample="scam">Crypto DM</button> ·
+          <button type="button" class="linkbtn" data-sample="rental">Rental ad</button> ·
+          <button type="button" class="linkbtn" data-sample="job">Job offer</button>
+        </span>
+      </div>
+      <button id="run" class="primary" type="button">Run trust check</button>
+      <p id="status" class="status" role="status"></p>
+    </div>
+
+    <div class="card" id="result-card">
+      <h2>Verification memo</h2>
+      <div id="quick-result" class="quick hidden"></div>
+      <div id="report" class="report">
+        <p class="muted">No check yet. Run one and the memo will appear here — verdict, red flags with quoted evidence, what is missing, and the questions to ask before you pay.</p>
+      </div>
+      <div id="receipt" class="receipt hidden"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="row between">
+      <h2>Receipt ledger</h2>
+      <button id="verify-chain" type="button">Verify whole chain</button>
+    </div>
+    <p class="muted">Every check appends one receipt. Each receipt hashes its input and report and carries the previous receipt's hash — edit a report later and verification fails; delete one and the chain breaks.</p>
+    <p id="chain-status" class="status"></p>
+    <div id="ledger" class="ledger"></div>
+  </section>
+
+  <footer>
+    <p>Built with Firebase AI Logic hybrid inference (Gemini Nano on-device + Gemini in the cloud), App Check, and Firestore. All AI inference goes through Firebase AI Logic. In demo mode a deterministic local engine stands in for the models and receipts are stamped DEMO.</p>
+  </footer>
+</main>
+
+<script type="module" src="src/app.js"></script>
+</body>
+</html>

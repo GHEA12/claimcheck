@@ -1,0 +1,1 @@
+{"firestore":{"rules":"firestore.rules"},"hosting":{"ignore":["firebase.json","**/node_modules/**","test/**","scripts/**","package.json","firebase-config.js",".firebaserc"],"public":".","rewrites":[{"destination":"/index.html","source":"**"}]}}

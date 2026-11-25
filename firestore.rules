@@ -1,0 +1,18 @@
+rules_version = '2';
+
+// ClaimCheck receipts are a public ledger by design: anyone may read and
+// verify them. Writes require a signed-in (anonymous is fine) user, and a
+// receipt document must carry the fields the verifier depends on.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /receipts/{receiptId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.app == 'claimcheck'
+        && request.resource.data.keys().hasAll(
+             ['id', 'createdAt', 'inputHash', 'reportHash', 'stages', 'prevHash', 'hash', 'report']);
+      // Receipts are immutable: history is never rewritten.
+      allow update, delete: if false;
+    }
+  }
+}
