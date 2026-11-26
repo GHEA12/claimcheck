@@ -86,9 +86,13 @@ export async function createLiveClient(firebaseConfig, { appCheckSiteKey } = {})
 
   async function call(model, prompt) {
     const result = await model.generateContent(prompt);
+    // The SDK's InferenceSource values are 'on_device' / 'in_cloud'
+    // (firebase-ai 12.6.0); normalize to the app's 'ON_DEVICE' /
+    // 'IN_CLOUD' so receipts and badges label live runs truthfully.
+    const inferenceSource = result.response.inferenceSource === 'on_device' ? 'ON_DEVICE' : 'IN_CLOUD';
     return {
       raw: result.response.text(),
-      inferenceSource: result.response.inferenceSource || 'IN_CLOUD',
+      inferenceSource,
     };
   }
 
