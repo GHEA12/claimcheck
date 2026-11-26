@@ -73,7 +73,10 @@ export async function createLiveClient(firebaseConfig, { appCheckSiteKey } = {})
     getGenerativeModel(ai, {
       mode: InferenceMode.PREFER_IN_CLOUD,
       inCloudParams: {
-        model: 'gemini-2.5-flash',
+        // Was gemini-2.5-flash; the first live runs on 2026-11-26 hung
+        // indefinitely on this model, so the cloud deep check uses the
+        // same current lite model as the fallback path.
+        model: 'gemini-3.5-flash-lite',
         generationConfig: {
           responseMimeType: 'application/json',
           responseSchema: toSdkSchema(REPORT_RESPONSE_SCHEMA),
