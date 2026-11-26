@@ -62,8 +62,13 @@ export async function createLiveClient(firebaseConfig, { appCheckSiteKey } = {})
 
   // Models are created lazily inside each call: the hybrid docs require
   // getGenerativeModel to be called after a user interaction.
-  const quickModel = () => getGenerativeModel(ai, { mode: InferenceMode.PREFER_ON_DEVICE });
-  const deviceModel = () => getGenerativeModel(ai, { mode: InferenceMode.PREFER_ON_DEVICE });
+  // The cloud fallback model is pinned explicitly: the SDK's former
+  // default (gemini-2.0-flash-lite) was retired and returns 404, as seen
+  // in the first live run on 2026-11-26.
+  const quickModel = () =>
+    getGenerativeModel(ai, { mode: InferenceMode.PREFER_ON_DEVICE, inCloudParams: { model: 'gemini-3.5-flash-lite' } });
+  const deviceModel = () =>
+    getGenerativeModel(ai, { mode: InferenceMode.PREFER_ON_DEVICE, inCloudParams: { model: 'gemini-3.5-flash-lite' } });
   const cloudModel = () =>
     getGenerativeModel(ai, {
       mode: InferenceMode.PREFER_IN_CLOUD,
