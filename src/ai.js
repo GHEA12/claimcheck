@@ -15,7 +15,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { getAI, getGenerativeModel, GoogleAIBackend, InferenceMode, Schema } from 'firebase/ai';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 import { REPORT_RESPONSE_SCHEMA } from './analyze.js';
 
@@ -34,18 +34,20 @@ function toSdkSchema(node) {
 export async function createLiveClient(firebaseConfig, { appCheckSiteKey } = {}) {
   const app = initializeApp(firebaseConfig);
 
-  // Firebase AI Logic requires App Check. A reCAPTCHA v3 site key is used
-  // when provided; otherwise the debug provider is enabled, which the
-  // contest rules explicitly accept ("debug tokens are accepted").
+  // Firebase AI Logic requires App Check. A reCAPTCHA Enterprise (Fraud
+  // Defense) site key is used when provided — the Classic v3 provider was
+  // deprecated by Firebase and its registration is disabled in the console.
+  // Without a site key the debug provider is enabled, which the contest
+  // rules explicitly accept ("debug tokens are accepted").
   if (appCheckSiteKey) {
     initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider(appCheckSiteKey),
+      provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
       isTokenAutoRefreshEnabled: true,
     });
   } else {
     // eslint-disable-next-line no-restricted-globals
     self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-    initializeAppCheck(app, { provider: new ReCaptchaV3Provider('debug-token-placeholder'), isTokenAutoRefreshEnabled: true });
+    initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider('debug-token-placeholder'), isTokenAutoRefreshEnabled: true });
   }
 
   // Anonymous auth so Firestore rules can scope receipt writes to signed-in
